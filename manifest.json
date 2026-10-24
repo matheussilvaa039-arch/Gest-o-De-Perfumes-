@@ -1,0 +1,9 @@
+{
+  "name": "Gestão de Perfumes",
+  "short_name": "Perfumes",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3f5f4",
+  "theme_color": "#152c27",
+  "description": "Controle de vendas, recebimentos, contas a receber, estoque e lucro."
+}

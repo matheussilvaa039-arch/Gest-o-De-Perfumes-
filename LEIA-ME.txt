@@ -1,0 +1,18 @@
+GESTÃO DE PERFUMES — versão inicial instalável (PWA)
+
+Conteúdo:
+- index.html: aplicativo
+- manifest.json: configuração para instalar na tela inicial
+- sw.js: cache offline básico
+
+COMO USAR NO ANDROID:
+1. Para instalação como app, publique estes arquivos em uma hospedagem HTTPS (por exemplo, GitHub Pages ou Netlify).
+2. Abra o endereço HTTPS no Chrome do celular.
+3. Menu ⋮ > "Instalar app" ou "Adicionar à tela inicial".
+4. Os dados ficam guardados localmente no navegador/aparelho. Use Relatórios > Criar backup com frequência.
+5. Não limpe os dados do navegador sem antes fazer backup.
+
+IMPORTANTE:
+- Este pacote não é um APK nativo. É um aplicativo web instalável (PWA).
+- Para proteger os registros, exporte backups JSON regularmente. Os dados não sincronizam entre aparelhos.
+- Teste o fluxo de venda e backup antes de inserir registros importantes.

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#152c27"><title>Gestão de Perfumes</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:#f3f5f4;--card:#fff;--ink:#172a25;--muted:#6c7b75;--green:#1e5143;--line:#e2e8e4;--red:#b43b45;--gold:#d5a64a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,sans-serif;padding-bottom:85px}
+header{background:linear-gradient(135deg,#142b25,#28604e);color:white;padding:24px 18px 22px;border-radius:0 0 24px 24px}
+header .eyebrow{font-size:12px;opacity:.8;letter-spacing:1.5px;text-transform:uppercase}h1{margin:5px 0;font-size:25px}header p{margin:5px 0 0;color:#d5e4dc;font-size:13px}
+main{padding:16px;max-width:700px;margin:auto}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:-4px}
+.metric,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 3px 12px #142b2508}
+.metric small{color:var(--muted);display:block;margin-bottom:8px}.metric strong{font-size:20px;overflow-wrap:anywhere}.green{color:var(--green)}.red{color:var(--red)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--line);padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom));z-index:5;justify-content:space-around}
+nav button{border:0;background:none;color:var(--muted);font-size:11px;padding:7px 4px;flex:1}nav button span{display:block;font-size:20px;margin-bottom:3px}nav button.active{color:var(--green);font-weight:700}
+h2{font-size:19px;margin:20px 0 12px}.panel{margin:12px 0}.field{margin:12px 0}.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d6dfd9;border-radius:10px;font:inherit;background:#fff;color:var(--ink)}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:0;border-radius:11px;background:var(--green);color:white;padding:13px 16px;font-weight:700;font-size:14px;width:100%;cursor:pointer}.btn.secondary{background:#e7efea;color:var(--green)}.btn.danger{background:#fae9e9;color:var(--red)}.btn.small{width:auto;padding:8px 10px;font-size:12px}
+.item{border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;margin:9px 0}.itemtop{display:flex;justify-content:space-between;gap:10px}.item strong{display:block}.muted{color:var(--muted);font-size:12px}.amount{font-weight:750;white-space:nowrap}.tag{display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;background:#fff1d8;color:#805c13;margin-top:6px}.tag.paid{background:#e2f3e8;color:#23633d}.empty{text-align:center;color:var(--muted);padding:25px 10px}.hidden{display:none!important}.toolbar{display:flex;gap:8px;align-items:center}.toolbar input{flex:1}.sectionhint{font-size:13px;color:var(--muted);line-height:1.5}.brandmark{display:inline-flex;width:40px;height:40px;border-radius:13px;background:#ffffff20;align-items:center;justify-content:center;font-size:23px;float:right}
+</style>
+</head>
+<body>
+<header><div class="brandmark">✦</div><div class="eyebrow">Seu negócio, sob controle</div><h1>Gestão de Perfumes</h1><p>Vendas · recebimentos · estoque · lucro</p></header>
+<main>
+<section id="dashboard">
+<div class="metrics">
+<div class="metric"><small>💰 Total vendido</small><strong id="mVendido">R$ 0,00</strong></div>
+<div class="metric"><small>✓ Já recebido</small><strong class="green" id="mRecebido">R$ 0,00</strong></div>
+<div class="metric"><small>◷ A receber</small><strong class="red" id="mPendente">R$ 0,00</strong></div>
+<div class="metric"><small>↗ Lucro estimado</small><strong class="green" id="mLucro">R$ 0,00</strong></div>
+</div>
+<h2>Resumo do negócio</h2><div class="panel"><div class="itemtop"><div><strong id="mQtd">0 vendas</strong><div class="muted">Vendas registradas</div></div><div style="text-align:right"><strong id="mEstoque">0 unidades</strong><div class="muted">Estoque disponível</div></div></div></div>
+<button class="btn" onclick="showTab('venda')">＋ Registrar nova venda</button>
+<h2>Últimas vendas</h2><div id="recentes"></div>
+</section>
+<section id="venda" class="hidden">
+<h2>Registrar venda</h2><p class="sectionhint">Informe o perfume, cliente e valores. O saldo pendente será calculado automaticamente.</p>
+<form id="saleForm" class="panel">
+<div class="field"><label>Perfume *</label><input id="sPerfume" required placeholder="Ex.: Malbec, 212 VIP, Lily"></div>
+<div class="field"><label>Cliente *</label><input id="sCliente" required placeholder="Nome do cliente"></div>
+<div class="row"><div class="field"><label>Preço da venda (R$) *</label><input id="sPreco" required type="number" min="0.01" step=".01" placeholder="150,00"></div><div class="field"><label>Custo do perfume (R$) *</label><input id="sCusto" required type="number" min="0" step=".01" placeholder="90,00"></div></div>
+<div class="row"><div class="field"><label>Recebido agora (R$)</label><input id="sRecebido" type="number" min="0" step=".01" value="0"></div><div class="field"><label>Pagamento</label><select id="sForma"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Parcelado</option><option>Outro</option></select></div></div>
+<div class="field"><label>Data prevista para receber</label><input id="sPrazo" type="date"></div>
+<div class="field"><label>Observações (opcional)</label><textarea id="sObs" rows="2" placeholder="Ex.: 2ª parcela, entrega combinada..."></textarea></div>
+<button class="btn" type="submit">Salvar venda</button>
+</form></section>
+<section id="vendas" class="hidden"><h2>Histórico de vendas</h2><div class="field"><input id="busca" placeholder="Buscar perfume ou cliente..." oninput="renderSales()"></div><div class="field"><select id="filtro" onchange="renderSales()"><option value="todas">Todas as vendas</option><option value="pendente">Com saldo a receber</option><option value="paga">Totalmente pagas</option></select></div><div id="listaVendas"></div></section>
+<section id="estoque" class="hidden"><h2>Estoque de perfumes</h2><p class="sectionhint">Cadastre as unidades disponíveis. Ao registrar uma venda, o estoque do perfume será reduzido quando houver saldo cadastrado.</p>
+<form id="stockForm" class="panel"><div class="field"><label>Nome do perfume *</label><input id="pNome" required placeholder="Nome do perfume"></div><div class="row"><div class="field"><label>Quantidade *</label><input id="pQtd" required type="number" min="0" step="1" placeholder="5"></div><div class="field"><label>Custo unitário (R$)</label><input id="pCusto" type="number" min="0" step=".01" placeholder="90,00"></div></div><button class="btn" type="submit">Adicionar / atualizar estoque</button></form><div id="listaEstoque"></div></section>
+<section id="relatorios" class="hidden"><h2>Relatórios e segurança</h2><div class="panel"><strong>Resumo financeiro</strong><p id="relResumo" class="sectionhint"></p><button class="btn secondary" onclick="exportCSV()">⇩ Exportar vendas (CSV)</button></div><div class="panel"><strong>Backup dos dados</strong><p class="sectionhint">Guarde uma cópia para recuperar seus dados caso troque de celular ou limpe o navegador.</p><button class="btn" onclick="backup()">Criar backup</button><div style="height:9px"></div><label class="btn secondary" style="display:block;text-align:center;cursor:pointer">Restaurar backup<input type="file" accept="application/json,.json" onchange="restoreBackup(event)" style="display:none"></label></div><div class="panel"><strong>Apagar todos os dados</strong><p class="sectionhint">Esta ação não pode ser desfeita. Faça backup antes.</p><button class="btn danger" onclick="clearAll()">Apagar dados</button></div></section>
+</main>
+<nav>
+<button class="active" data-tab="dashboard" onclick="showTab('dashboard')"><span>⌂</span>Início</button>
+<button data-tab="venda" onclick="showTab('venda')"><span>＋</span>Nova venda</button>
+<button data-tab="vendas" onclick="showTab('vendas')"><span>▤</span>Vendas</button>
+<button data-tab="estoque" onclick="showTab('estoque')"><span>▣</span>Estoque</button>
+<button data-tab="relatorios" onclick="showTab('relatorios')"><span>◷</span>Relatórios</button>
+</nav>
+<script>
+const KEY='gestaoPerfumes_v1';
+let db={sales:[],stock:[]};
+const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.sales)&&Array.isArray(d.stock))db=d}catch(e){}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+function totals(){return db.sales.reduce((a,s)=>{a.v+=s.preco;a.r+=s.recebido;a.p+=Math.max(0,s.preco-s.recebido);a.l+=s.preco-s.custo;return a},{v:0,r:0,p:0,l:0})}
+function showTab(tab){document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('hidden',s.id!==tab));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));window.scrollTo(0,0);if(tab==='vendas')renderSales();if(tab==='estoque')renderStock()}
+document.getElementById('saleForm').addEventListener('submit',e=>{e.preventDefault();let preco=+sPreco.value,custo=+sCusto.value,recebido=+(sRecebido.value||0);if(recebido>preco){alert('O valor recebido não pode ser maior que o preço da venda.');return}
+let name=sPerfume.value.trim();let st=db.stock.find(x=>x.nome.toLowerCase()===name.toLowerCase());if(st&&st.qtd>0)st.qtd=Math.max(0,st.qtd-1);
+db.sales.unshift({id:Date.now(),data:new Date().toISOString(),perfume:name,cliente:sCliente.value.trim(),preco,custo,recebido,forma:sForma.value,prazo:sPrazo.value,obs:sObs.value.trim()});e.target.reset();sRecebido.value=0;save();showTab('dashboard');});
+document.getElementById('stockForm').addEventListener('submit',e=>{e.preventDefault();let nome=pNome.value.trim(),qtd=+pQtd.value,custo=+(pCusto.value||0),old=db.stock.find(x=>x.nome.toLowerCase()===nome.toLowerCase());if(old){old.qtd=qtd;old.custo=custo}else db.stock.push({id:Date.now(),nome,qtd,custo});e.target.reset();save();renderStock()});
+function renderAll(){let t=totals();mVendido.textContent=money(t.v);mRecebido.textContent=money(t.r);mPendente.textContent=money(t.p);mLucro.textContent=money(t.l);mQtd.textContent=db.sales.length+' venda(s)';mEstoque.textContent=db.stock.reduce((a,x)=>a+x.qtd,0)+' unidade(s)';relResumo.textContent=`Vendido: ${money(t.v)} · Recebido: ${money(t.r)} · A receber: ${money(t.p)} · Lucro bruto estimado: ${money(t.l)}. O lucro não inclui outras despesas.`;recentes.innerHTML=db.sales.slice(0,4).map(card).join('')||'<div class="empty">Suas vendas aparecerão aqui.</div>';renderSales();renderStock()}
+function card(s){let pend=Math.max(0,s.preco-s.recebido);return `<div class="item"><div class="itemtop"><div><strong>${esc(s.perfume)}</strong><div>${esc(s.cliente)}</div><div class="muted">${new Date(s.data).toLocaleDateString('pt-BR')} · ${esc(s.forma)}</div></div><div style="text-align:right"><div class="amount">${money(s.preco)}</div><span class="tag ${pend===0?'paid':''}">${pend===0?'Pago':'Falta '+money(pend)}</span></div></div>${pend>0?`<div style="margin-top:10px"><button class="btn small" onclick="receive(${s.id})">Registrar recebimento</button></div>`:''}<div style="margin-top:9px"><button class="btn secondary small" onclick="details(${s.id})">Detalhes</button> <button class="btn danger small" onclick="delSale(${s.id})">Excluir</button></div></div>`}
+function renderSales(){if(!listaVendas)return;let q=(busca?.value||'').toLowerCase(),f=filtro?.value||'todas';let arr=db.sales.filter(s=>(s.perfume+' '+s.cliente).toLowerCase().includes(q)).filter(s=>f==='todas'||(f==='paga'?s.recebido>=s.preco:s.recebido<s.preco));listaVendas.innerHTML=arr.map(card).join('')||'<div class="empty">Nenhuma venda encontrada.</div>'}
+function renderStock(){if(!listaEstoque)return;listaEstoque.innerHTML=db.stock.map(s=>`<div class="item"><div class="itemtop"><div><strong>${esc(s.nome)}</strong><div class="muted">Custo unitário: ${money(s.custo)}</div></div><div class="amount">${s.qtd} un.</div></div><div style="margin-top:9px"><button class="btn secondary small" onclick="editStock(${s.id})">Alterar quantidade</button> <button class="btn danger small" onclick="delStock(${s.id})">Excluir</button></div></div>`).join('')||'<div class="empty">Cadastre seus perfumes para acompanhar o estoque.</div>'}
+function receive(id){let s=db.sales.find(x=>x.id===id);if(!s)return;let raw=prompt(`Falta receber ${money(s.preco-s.recebido)}. Quanto recebeu agora?`);if(raw===null)return;let v=Number(raw.replace(',','.'));if(!Number.isFinite(v)||v<=0||v>s.preco-s.recebido){alert('Informe um valor válido, até o saldo pendente.');return}s.recebido+=v;save()}
+function details(id){let s=db.sales.find(x=>x.id===id);alert(`Perfume: ${s.perfume}\nCliente: ${s.cliente}\nVenda: ${money(s.preco)}\nCusto: ${money(s.custo)}\nLucro estimado: ${money(s.preco-s.custo)}\nRecebido: ${money(s.recebido)}\nFalta: ${money(s.preco-s.recebido)}\nForma: ${s.forma}\nPrevisão: ${s.prazo||'Não informada'}\nObservações: ${s.obs||'—'}`)}
+function delSale(id){if(confirm('Excluir esta venda?')){db.sales=db.sales.filter(x=>x.id!==id);save()}}
+function editStock(id){let s=db.stock.find(x=>x.id===id),raw=prompt('Nova quantidade em estoque:',s.qtd);if(raw===null)return;let n=Number(raw);if(Number.isInteger(n)&&n>=0){s.qtd=n;save()}}
+function delStock(id){if(confirm('Excluir este item do estoque?')){db.stock=db.stock.filter(x=>x.id!==id);save()}}
+function download(name,content,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function backup(){download('backup-gestao-perfumes.json',JSON.stringify(db,null,2),'application/json')}
+function restoreBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.sales)||!Array.isArray(d.stock))throw Error();if(confirm('Restaurar backup? Os dados atuais serão substituídos.')){db=d;save();alert('Backup restaurado.')}}catch(err){alert('Arquivo de backup inválido.')}e.target.value=''};r.readAsText(f)}
+function exportCSV(){let rows=[['Data','Perfume','Cliente','Preço','Custo','Recebido','Pendente','Forma','Previsão','Observações'],...db.sales.map(s=>[new Date(s.data).toLocaleDateString('pt-BR'),s.perfume,s.cliente,s.preco,s.custo,s.recebido,s.preco-s.recebido,s.forma,s.prazo,s.obs])];let csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');download('vendas-perfumes.csv',csv,'text/csv;charset=utf-8')}
+function clearAll(){if(confirm('Tem certeza? Todos os registros de vendas e estoque serão apagados.')){db={sales:[],stock:[]};save()}}
+load();renderAll();
+</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}</script></body></html>
